@@ -12,6 +12,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'altercation/vim-colors-solarized'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'ayu-theme/ayu-vim'
+Plug 'christoomey/vim-tmux-navigator'
 call plug#end()
 
 set termguicolors     " enable true colors support
@@ -32,5 +33,9 @@ vnoremap <leader>p "_dP
 vnoremap <leader>y "+y
 nnoremap <leader>y "+y
 nnoremap <leader>Y gg"yG
+inoremap jh <Esc>
 
-
+nnoremap <C-J> <C-W>j
+nnoremap <C-K> <C-W>k
+nnoremap <C-H> <C-W>h
+nnoremap <C-L> <C-W>l
