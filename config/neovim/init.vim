@@ -25,7 +25,7 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/lsp_extensions.nvim'
 Plug 'nvim-lua/completion-nvim'
-
+Plug 'b3nj5m1n/kommentary'
 " Collection of common configurations for the Nvim LSP client
 Plug 'neovim/nvim-lspconfig'
 
