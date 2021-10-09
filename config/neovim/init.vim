@@ -28,7 +28,8 @@ Plug 'nvim-lua/completion-nvim'
 Plug 'b3nj5m1n/kommentary'
 " Collection of common configurations for the Nvim LSP client
 Plug 'neovim/nvim-lspconfig'
-
+Plug 'neovim/nvim-lspconfig'
+Plug 'williamboman/nvim-lsp-installer'
 " Completion framework
 Plug 'hrsh7th/nvim-cmp'
 
@@ -109,41 +110,44 @@ set shortmess+=c
 " Configure LSP through rust-tools.nvim plugin.
 " rust-tools will configure and enable certain LSP features for us.
 " See https://github.com/simrat39/rust-tools.nvim#configuration
-lua <<EOF
-local nvim_lsp = require'lspconfig'
 
-local opts = {
-    tools = { -- rust-tools options
-        autoSetHints = true,
-        hover_with_actions = true,
-        inlay_hints = {
-            show_parameter_hints = false,
-            parameter_hints_prefix = "",
-            other_hints_prefix = "",
-        },
-    },
 
-    -- all the opts to send to nvim-lspconfig
-    -- these override the defaults set by rust-tools.nvim
-    -- see https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#rust_analyzer
-    server = {
-        -- on_attach is a callback called when the language server attachs to the buffer
-        -- on_attach = on_attach,
-        settings = {
-            -- to enable rust-analyzer settings visit:
-            -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
-            ["rust-analyzer"] = {
-                -- enable clippy on save
-                checkOnSave = {
-                    command = "clippy"
-                },
-            }
-        }
-    },
-}
+lua << EOF 
+local lsp_installer = require("nvim-lsp-installer")
 
-require('rust-tools').setup(opts)
+lsp_installer.on_server_ready(function(server)
+    local opts = {}
+
+    -- (optional) Customize the options passed to the server
+    -- if server.name == "tsserver" then
+    --     opts.root_dir = function() ... end
+    -- end
+
+    -- This setup() function is exactly the same as lspconfig's setup function (:help lspconfig-quickstart)
+    server:setup(opts)
+    vim.cmd [[ do User LspAttachBuffers ]]
+end)
+EOF 
+" LSP configuration
+lua << EOF
+local nvim_lsp = require('lspconfig')
+
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+  -- Enable completion triggered by <c-x><c-o>
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  local opts = { noremap=true, silent=true }
+
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+end
 EOF
+
 
 " Setup Completion
 " See https://github.com/hrsh7th/nvim-cmp#basic-configuration
@@ -181,4 +185,6 @@ cmp.setup({
   },
 })
 EOF
-
+" auto-format
+autocmd BufWritePre *.js lua vim.lsp.buf.formatting_sync(nil, 100)
+autocmd BufWritePre *.jsx lua vim.lsp.buf.formatting_sync(nil, 100)
