@@ -14,39 +14,52 @@ set nobackup
 set nowritebackup
 
 call plug#begin('~/.vim/plugged')
+Plug 'altercation/vim-colors-solarized'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'altercation/vim-colors-solarized'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'ayu-theme/ayu-vim'
+
 Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn install --frozen-lockfile'}
 Plug 'glepnir/lspsaga.nvim'
+
 Plug 'christoomey/vim-tmux-navigator'
+
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/lsp_extensions.nvim'
+
 Plug 'nvim-lua/completion-nvim'
+
 Plug 'b3nj5m1n/kommentary'
+
 " Collection of common configurations for the Nvim LSP client
 Plug 'neovim/nvim-lspconfig'
 Plug 'neovim/nvim-lspconfig'
 Plug 'williamboman/nvim-lsp-installer'
-" Completion framework
 Plug 'hrsh7th/nvim-cmp'
 
-" LSP completion source for nvim-cmp
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+
 Plug 'hrsh7th/cmp-nvim-lsp'
 
-" Snippet completion source for nvim-cmp
 Plug 'hrsh7th/cmp-vsnip'
 
-" Other usefull completion sources
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-buffer'
 
-" See hrsh7th's other plugins for more completion sources!
+Plug 'scrooloose/nerdtree'
+Plug 'tsony-tsonev/nerdtree-git-plugin'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'ryanoasis/vim-devicons'
+Plug 'airblade/vim-gitgutter'
 
-" To enable more of the features of rust-analyzer, such as inlay hints and more!
-Plug 'simrat39/rust-tools.nvim'
+Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+Plug 'HerringtonDarkholme/yats.vim' " TS Syntax
+
+Plug 'kyazdani42/nvim-web-devicons' " for file icons
+Plug 'kyazdani42/nvim-tree.lua'
 
 " Snippet engine
 Plug 'hrsh7th/vim-vsnip'
@@ -54,9 +67,8 @@ Plug 'hrsh7th/vim-vsnip'
 Plug 'cespare/vim-toml'
 Plug 'stephpy/vim-yaml'
 Plug 'rust-lang/rust.vim'
-Plug 'rhysd/vim-clang-format'
+
 "Plug 'fatih/vim-go'
-Plug 'dag/vim-fish'
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 call plug#end()
@@ -66,6 +78,54 @@ let ayucolor="light"  " for light version of theme
 let ayucolor="mirage" " for mirage version of theme
 let ayucolor="dark"   " for dark version of theme
 colorscheme ayu
+
+
+" open NERDTree automatically
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * NERDTree
+
+let g:NERDTreeGitStatusWithFlags = 1
+let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+let g:NERDTreeGitStatusNodeColorization = 1
+let g:NERDTreeColorMapCustom = {
+    \ "Staged"    : "#0ee375",  
+    \ "Modified"  : "#d9bf91",  
+    \ "Renamed"   : "#51C9FC",  
+    \ "Untracked" : "#FCE77C",  
+    \ "Unmerged"  : "#FC51E6",  
+    \ "Dirty"     : "#FFBD61",  
+    \ "Clean"     : "#87939A",   
+    \ "Ignored"   : "#808080"   
+    \ } 
+let g:NERDTreeIgnore = ['^node_modules$']
+
+" vim-prettier
+let g:prettier#quickfix_enabled = 0
+let g:prettier#quickfix_auto_focus = 0
+" prettier command for coc
+command! -nargs=0 Prettier :CocCommand prettier.formatFile
+" run prettier on save
+let g:prettier#autoformat = 0
+autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html PrettierAsync
+
+
+" sync open file with NERDTree
+" " Check if NERDTree is open or active
+function! IsNERDTreeOpen()        
+  return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
+endfunction
+
+" Call NERDTreeFind iff NERDTree is active, current window contains a modifiable
+" file, and we're not in vimdiff
+function! SyncTree()
+  if &modifiable && IsNERDTreeOpen() && strlen(expand('%')) > 0 && !&diff
+    NERDTreeFind
+    wincmd p
+  endif
+endfunction
+
+" Highlight currently open buffer in NERDTree
+autocmd BufEnter * call SyncTree()
 
 " Use tab for trigger completion with characters ahead and navigate.
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
@@ -96,7 +156,16 @@ nnoremap <C-K> <C-W>k
 nnoremap <C-H> <C-W>h
 nnoremap <C-L> <C-W>l
 
-
+" In insert or command mode, move normally by using Ctrl
+inoremap <C-h> <Left>
+inoremap <C-j> <Down>
+inoremap <C-k> <Up>
+inoremap <C-l> <Right>
+cnoremap <C-h> <Left>
+cnoremap <C-j> <Down>
+cnoremap <C-k> <Up>
+cnoremap <C-l> <Right>
+map <C-n> :NERDTreeToggle<CR>
 " Set completeopt to have a better completion experience
 " :help completeopt
 " menuone: popup even when there's only one match
@@ -188,3 +257,15 @@ EOF
 " auto-format
 autocmd BufWritePre *.js lua vim.lsp.buf.formatting_sync(nil, 100)
 autocmd BufWritePre *.jsx lua vim.lsp.buf.formatting_sync(nil, 100)
+
+" Code navigation shortcuts
+nnoremap <silent> <c-]> <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> K     <cmd>lua vim.lsp.buf.hover()<CR>
+nnoremap <silent> gD    <cmd>lua vim.lsp.buf.implementation()<CR>
+nnoremap <silent> <c-k> <cmd>lua vim.lsp.buf.signature_help()<CR>
+nnoremap <silent> 1gD   <cmd>lua vim.lsp.buf.type_definition()<CR>
+nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
+nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
+nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+nnoremap <silent> gd    <cmd>lua vim.lsp.buf.definition()<CR>
+
