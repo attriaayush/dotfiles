@@ -333,8 +333,8 @@ key_bindings:
   #- { key: C,      mods: Control, mode: Search,     action: SearchCancel          }
   #- { key: U,      mods: Control, mode: Search,     action: SearchClear           }
   #- { key: W,      mods: Control, mode: Search,     action: SearchDeleteWord      }
-  #- { key: P,      mods: Control, mode: Search,     action: SearchHistoryPrevious }
-  #- { key: N,      mods: Control, mode: Search,     action: SearchHistoryNext     }
+  - { key: P,      mods: Control, mode: Search,     action: SearchHistoryPrevious }
+  - { key: Comma,      mods: Control, mode: Search,     action: SearchHistoryNext     }
   #- { key: Up,                    mode: Search,     action: SearchHistoryPrevious }
   #- { key: Down,                  mode: Search,     action: SearchHistoryNext     }
   #- { key: Return,                mode: Search|~Vi, action: SearchFocusNext       }

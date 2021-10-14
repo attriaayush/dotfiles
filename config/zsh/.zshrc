@@ -121,8 +121,12 @@ source $ZSH/oh-my-zsh.sh
 alias k="kubectl"
 alias ga="git add"
 alias gst="git status"
+alias gd="git diff"
+alias glog="git log"
 alias gcam="git commit -am"
 alias cl="clear"
+alias docker="lima nerdctl"
+alias nerd="lima nerdctl"
 
 eval "$(starship init zsh)"
 eval "$(zoxide init zsh)"
