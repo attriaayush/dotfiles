@@ -5,72 +5,72 @@ set tabstop=4 softtabstop=4
 set expandtab
 set smartindent
 set shiftwidth=4
-
+set encoding=utf8
 " TextEdit might fail if hidden is not set.
 set hidden
-
+set mouse+=a
 " Some servers have issues with backup files, see #649.
 set nobackup
 set nowritebackup
 
 call plug#begin('~/.vim/plugged')
+" Theming and Colours
 Plug 'altercation/vim-colors-solarized'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'ayu-theme/ayu-vim'
 
-Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn install --frozen-lockfile'}
-Plug 'glepnir/lspsaga.nvim'
+Plug 'machakann/vim-highlightedyank'
+Plug 'editorconfig/editorconfig-vim'
+Plug 'jiangmiao/auto-pairs'
+Plug 'andymass/vim-matchup'
+
+" Popup for file finder
+Plug 'hoob3rt/lualine.nvim'
+Plug 'nvim-lua/popup.nvim'
 
 Plug 'christoomey/vim-tmux-navigator'
 
+" LSP setup
+Plug 'glepnir/lspsaga.nvim'
 Plug 'neovim/nvim-lspconfig'
-Plug 'nvim-lua/lsp_extensions.nvim'
 
-Plug 'nvim-lua/completion-nvim'
-
-Plug 'b3nj5m1n/kommentary'
-
-" Collection of common configurations for the Nvim LSP client
-Plug 'neovim/nvim-lspconfig'
-Plug 'neovim/nvim-lspconfig'
+" Plug 'nvim-lua/lsp_extensions.nvim'
 Plug 'williamboman/nvim-lsp-installer'
-Plug 'hrsh7th/nvim-cmp'
 
+" Comments and git
+Plug 'b3nj5m1n/kommentary'
+Plug 'tpope/vim-fugitive'
+
+" Fuzzy file finder setup
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
-
-Plug 'hrsh7th/cmp-nvim-lsp'
-
-Plug 'hrsh7th/cmp-vsnip'
-
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-buffer'
+Plug 'airblade/vim-rooter'
+" Tabs
+Plug 'romgrk/barbar.nvim'
 
 Plug 'scrooloose/nerdtree'
-Plug 'tsony-tsonev/nerdtree-git-plugin'
-Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'ryanoasis/vim-devicons'
 Plug 'airblade/vim-gitgutter'
-
-Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
-Plug 'HerringtonDarkholme/yats.vim' " TS Syntax
-
-Plug 'kyazdani42/nvim-web-devicons' " for file icons
-Plug 'kyazdani42/nvim-tree.lua'
+Plug 'kyazdani42/nvim-web-devicons'
 
 " Snippet engine
-Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+
 " Syntactic language support
 Plug 'cespare/vim-toml'
 Plug 'stephpy/vim-yaml'
 Plug 'rust-lang/rust.vim'
+Plug 'simrat39/rust-tools.nvim'
 
-"Plug 'fatih/vim-go'
-Plug 'godlygeek/tabular'
+" Multi cursor
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+
+" Markdown plugins
 Plug 'plasticboy/vim-markdown'
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 call plug#end()
 
 set termguicolors     " enable true colors support
@@ -79,11 +79,13 @@ let ayucolor="mirage" " for mirage version of theme
 let ayucolor="dark"   " for dark version of theme
 colorscheme ayu
 
+set completeopt=menu,menuone,noselect
+let g:rustfmt_autosave = 1
 
 " open NERDTree automatically
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * NERDTree
-
+let g:airline_powerline_fonts = 1
 let g:NERDTreeGitStatusWithFlags = 1
 let g:WebDevIconsUnicodeDecorateFolderNodes = 1
 let g:NERDTreeGitStatusNodeColorization = 1
@@ -98,19 +100,7 @@ let g:NERDTreeColorMapCustom = {
     \ "Ignored"   : "#808080"   
     \ } 
 let g:NERDTreeIgnore = ['^node_modules$']
-
-" vim-prettier
-let g:prettier#quickfix_enabled = 0
-let g:prettier#quickfix_auto_focus = 0
-" prettier command for coc
-command! -nargs=0 Prettier :CocCommand prettier.formatFile
-" run prettier on save
-let g:prettier#autoformat = 0
-autocmd BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.yaml,*.html PrettierAsync
-
-
-" sync open file with NERDTree
-" " Check if NERDTree is open or active
+" Check if NERDTree is open or active
 function! IsNERDTreeOpen()        
   return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
 endfunction
@@ -127,37 +117,77 @@ endfunction
 " Highlight currently open buffer in NERDTree
 autocmd BufEnter * call SyncTree()
 
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+" from readme
+" if hidden is not set, TextEdit might fail.
+set hidden " Some servers have issues with backup files, see #649 set nobackup set nowritebackup " Better display for messages set cmdheight=2 " You will have bad experience for diagnostic messages when it's default 4000.
+set updatetime=300
+" Show diagnostic popup on cursor hold
+autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics()
+" Goto previous/next diagnostic warning/error
+nnoremap <silent> g[ <cmd>lua vim.lsp.diagnostic.goto_prev()<CR>
+nnoremap <silent> g] <cmd>lua vim.lsp.diagnostic.goto_next()<CR>
+" don't give |ins-completion-menu| messages.
+set shortmess+=c
+
+" Show diagnostic hover after 'updatetime' and don't steal focus
+autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics({focusable = false})
+
+" always show signcolumns
+set signcolumn=yes
+
+" Use K to show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
 
 let mapleader = " "
 nnoremap <leader>pv :Vex<CR>
 nnoremap <leader><CR> :so ~/.config/nvim/init.vim<CR>
-nnoremap <C-p> :GFiles<CR>
-nnoremap <leader>pf :Files<CR>
 nnoremap <C-j> :cnext<CR>
 nnoremap <C-k> :cprev<CR>
 nnoremap <C-k> :cprev<CR>
 vnoremap <leader>p "_dP
 vnoremap <leader>y "+y
-nnoremap <leader>y "+y
 nnoremap <leader>Y gg"yG
 inoremap jh <Esc>
-nnoremap <C-d> <Del>
 
 nnoremap <C-J> <C-W>j
 nnoremap <C-K> <C-W>k
 nnoremap <C-H> <C-W>h
 nnoremap <C-L> <C-W>l
 
+" Toggle hightlighted search
+nnoremap th :set hlsearch!<CR>
+
+" Moving lines open and down visually
+nnoremap M :m .+1<CR>==
+nnoremap N :m .-2<CR>==
+vnoremap M :m '>+1<CR>gv=gv
+vnoremap N :m '<-2<CR>gv=gv
+" inoremap <A-j> <Esc>:m .+1<CR>==gi
+" inoremap <A-k> <Esc>:m .-2<CR>==gi
+
+" Telescope remapping
+nnoremap <C-p> <cmd>Telescope find_files<cr>
+nnoremap <leader>ff <cmd>Telescope live_grep<cr>
+nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+
+" Move to previous/next
+nnoremap <C-q> :BufferPrevious<CR>
+nnoremap <C-w> :BufferNext<CR>
+nnoremap <C-c> :BufferClose<CR>
+nnoremap <leader>q< :BufferMovePrevious<CR>
+nnoremap <leader>q> :BufferMoveNext<CR>
 " In insert or command mode, move normally by using Ctrl
 inoremap <C-h> <Left>
+inoremap <key> <C-o>de
 inoremap <C-j> <Down>
 inoremap <C-k> <Up>
 inoremap <C-l> <Right>
@@ -165,13 +195,13 @@ cnoremap <C-h> <Left>
 cnoremap <C-j> <Down>
 cnoremap <C-k> <Up>
 cnoremap <C-l> <Right>
-map <C-n> :NERDTreeToggle<CR>
+map <C-t> :NERDTreeToggle<CR>
 " Set completeopt to have a better completion experience
 " :help completeopt
 " menuone: popup even when there's only one match
 " noinsert: Do not insert text until a selection is made
 " noselect: Do not select, force user to select one from the menu
-set completeopt=menuone,noinsert,noselect
+" set completeopt=menuone,noinsert
 
 " Avoid showing extra messages when using completion
 set shortmess+=c
@@ -179,8 +209,6 @@ set shortmess+=c
 " Configure LSP through rust-tools.nvim plugin.
 " rust-tools will configure and enable certain LSP features for us.
 " See https://github.com/simrat39/rust-tools.nvim#configuration
-
-
 lua << EOF 
 local lsp_installer = require("nvim-lsp-installer")
 
@@ -217,6 +245,77 @@ local on_attach = function(client, bufnr)
 end
 EOF
 
+lua <<EOF
+require'lualine'.setup {
+  options = {
+    icons_enabled = true,
+    theme = 'gruvbox_material',
+    component_separators = {'', ''},
+    section_separators = {'', ''},
+    disabled_filetypes = {}
+  },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch'},
+    lualine_c = {'filename'},
+    lualine_x = {'encoding', 'fileformat', 'filetype'},
+    lualine_y = {'progress'},
+    lualine_z = {'location'}
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {'filename'},
+    lualine_x = {'location'},
+    lualine_y = {},
+    lualine_z = {}
+  },
+  tabline = {},
+  extensions = {}
+  }
+EOF
+
+" Avoid showing extra messages when using completion
+set shortmess+=c
+
+" Configure LSP through rust-tools.nvim plugin.
+" rust-tools will configure and enable certain LSP features for us.
+" See https://github.com/simrat39/rust-tools.nvim#configuration
+lua <<EOF
+local nvim_lsp = require'lspconfig'
+
+local opts = {
+    tools = { -- rust-tools options
+        autoSetHints = true,
+        hover_with_actions = true,
+        inlay_hints = {
+            show_parameter_hints = false,
+            parameter_hints_prefix = "",
+            other_hints_prefix = "",
+        },
+    },
+
+    -- all the opts to send to nvim-lspconfig
+    -- these override the defaults set by rust-tools.nvim
+    -- see https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#rust_analyzer
+    server = {
+        -- on_attach is a callback called when the language server attachs to the buffer
+        -- on_attach = on_attach,
+        settings = {
+            -- to enable rust-analyzer settings visit:
+            -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
+            ["rust-analyzer"] = {
+                -- enable clippy on save
+                checkOnSave = {
+                    command = "clippy"
+                },
+            }
+        }
+    },
+}
+
+require('rust-tools').setup(opts)
+EOF
 
 " Setup Completion
 " See https://github.com/hrsh7th/nvim-cmp#basic-configuration
@@ -254,6 +353,7 @@ cmp.setup({
   },
 })
 EOF
+
 " auto-format
 autocmd BufWritePre *.js lua vim.lsp.buf.formatting_sync(nil, 100)
 autocmd BufWritePre *.jsx lua vim.lsp.buf.formatting_sync(nil, 100)
@@ -268,4 +368,4 @@ nnoremap <silent> gr    <cmd>lua vim.lsp.buf.references()<CR>
 nnoremap <silent> g0    <cmd>lua vim.lsp.buf.document_symbol()<CR>
 nnoremap <silent> gW    <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
 nnoremap <silent> gd    <cmd>lua vim.lsp.buf.definition()<CR>
-
+nnoremap <S-Enter> moO<Esc>`o
