@@ -1,6 +1,6 @@
 let mapleader = " "
 
-set scrolloff=8
+set scrolloff=4
 set number
 set relativenumber
 set tabstop=4 softtabstop=4 shiftwidth=4 noexpandtab
@@ -14,7 +14,6 @@ set nobackup
 set nowritebackup
 set title
 set termguicolors     " enable true colors support
-set spelllang=en_gb
 set autoindent
 set sidescrolloff=5
 set noshowmode
@@ -24,13 +23,8 @@ set smartcase
 set nojoinspaces
 set splitbelow
 set splitright
-let g:netrw_banner=0
-let g:netrw_altv=1
-let g:netrw_liststyle=3
-let g:netrw_list_hide=netrw_gitignore#Hide()
-let g:netrw_list_hide.='\(^\|\s\s\)\zs\.\S\+'
 
-call plug#begin('~/.vim/plugged')
+ call plug#begin('~/.vim/plugged')
 " PLUGINS
 " Theming and Colours
 Plug 'ayu-theme/ayu-vim'
@@ -40,8 +34,8 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'andymass/vim-matchup'
 Plug 'hoob3rt/lualine.nvim'
 Plug 'christoomey/vim-tmux-navigator'
-" Plug 'tpope/vim-surround'
-
+Plug 'tpope/vim-surround'
+Plug 'godlygeek/tabular'
 " Coc Installer
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
@@ -64,6 +58,13 @@ Plug 'ryanoasis/vim-devicons'
 Plug 'airblade/vim-gitgutter'
 Plug 'kyazdani42/nvim-web-devicons'
 
+" Syntax plugins
+Plug 'cespare/vim-toml'
+Plug 'stephpy/vim-yaml'
+Plug 'pangloss/vim-javascript'
+Plug 'leafgarland/typescript-vim'
+Plug 'peitalin/vim-jsx-typescript'
+Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 " Multi cursor
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 
@@ -83,9 +84,14 @@ colorscheme ayu
 
 set completeopt=menu,menuone,noselect
 let g:rustfmt_autosave = 1
-
+let g:vim_markdown_folding_disabled = 1
 " Highlight selection on yank
 au TextYankPost * silent! lua vim.highlight.on_yank()
+
+autocmd BufEnter *.{js,jsx,ts,tsx} :syntax sync fromstart
+autocmd BufLeave *.{js,jsx,ts,tsx} :syntax sync clear
+
+autocmd BufEnter NERD_tree_* | execute 'normal R'
 
 " open NERDTree automatically
 autocmd StdinReadPre * let s:std_in=1
@@ -104,7 +110,8 @@ let g:NERDTreeColorMapCustom = {
     \ "Clean"     : "#87939A",   
     \ "Ignored"   : "#808080"   
     \ } 
-let g:NERDTreeIgnore = ['^node_modules$']
+let NERDTreeShowHidden=1
+let g:NERDTreeIgnore = ['^node_modules$', '\.git$']
 " Check if NERDTree is open or active
 function! IsNERDTreeOpen()        
   return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
@@ -185,6 +192,14 @@ cnoremap <C-k> <Up>
 cnoremap <C-l> <Right>
 map <C-t> :NERDTreeToggle<CR>
 
+lua << EOF 
+require('telescope').setup{ 
+    defaults = { 
+        file_ignore_patterns = {"node_modules"} 
+        } 
+     }
+EOF 
+
 lua <<EOF
 require'lualine'.setup {
   options = {
@@ -249,6 +264,14 @@ inoremap <silent><expr> <c-space> coc#refresh()
 " format on enter, <cr> could be remapped by other vim plugin
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
+  let g:coc_global_extensions += ['coc-prettier']
+endif
+
+if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
+  let g:coc_global_extensions += ['coc-eslint']
+endif
 
 " Use `[g` and `]g` to navigate diagnostics
 nmap <silent> [g <Plug>(coc-diagnostic-prev)
