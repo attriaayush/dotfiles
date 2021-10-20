@@ -24,18 +24,18 @@ set nojoinspaces
 set splitbelow
 set splitright
 
- call plug#begin('~/.vim/plugged')
+call plug#begin('~/.vim/plugged')
 " PLUGINS
 " Theming and Colours
 Plug 'ayu-theme/ayu-vim'
 
-Plug 'editorconfig/editorconfig-vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'andymass/vim-matchup'
 Plug 'hoob3rt/lualine.nvim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-surround'
 Plug 'godlygeek/tabular'
+
 " Coc Installer
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
@@ -47,7 +47,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-telescope/telescope.nvim'
-Plug 'airblade/vim-rooter'
 
 " Tabs
 Plug 'romgrk/barbar.nvim'
@@ -60,11 +59,10 @@ Plug 'kyazdani42/nvim-web-devicons'
 
 " Syntax plugins
 Plug 'cespare/vim-toml'
-Plug 'stephpy/vim-yaml'
+" Plug 'stephpy/vim-yaml'
 Plug 'pangloss/vim-javascript'
 Plug 'leafgarland/typescript-vim'
 Plug 'peitalin/vim-jsx-typescript'
-Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 " Multi cursor
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 
@@ -74,7 +72,6 @@ Plug 'justinmk/vim-sneak'
 " Markdown plugins
 Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
 call plug#end()
 
 let ayucolor="light"  " for light version of theme
@@ -192,15 +189,15 @@ cnoremap <C-k> <Up>
 cnoremap <C-l> <Right>
 map <C-t> :NERDTreeToggle<CR>
 
-lua << EOF 
+lua << EOF
 require('telescope').setup{ 
-    defaults = { 
-        file_ignore_patterns = {"node_modules"} 
-        } 
-     }
-EOF 
+defaults = { 
+    file_ignore_patterns = {"node_modules"} 
+    } 
+}
+EOF
 
-lua <<EOF
+lua << EOF
 require'lualine'.setup {
   options = {
     icons_enabled = true,
