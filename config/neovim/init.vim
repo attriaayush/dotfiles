@@ -28,9 +28,8 @@ call plug#begin('~/.vim/plugged')
 " PLUGINS
 " Theming and Colours
 Plug 'ayu-theme/ayu-vim'
+Plug 'editorconfig/editorconfig-vim'
 
-Plug 'jiangmiao/auto-pairs'
-Plug 'andymass/vim-matchup'
 Plug 'hoob3rt/lualine.nvim'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'tpope/vim-surround'
@@ -59,13 +58,13 @@ Plug 'kyazdani42/nvim-web-devicons'
 
 " Syntax plugins
 Plug 'cespare/vim-toml'
-" Plug 'stephpy/vim-yaml'
 Plug 'pangloss/vim-javascript'
 Plug 'leafgarland/typescript-vim'
 Plug 'peitalin/vim-jsx-typescript'
 " Multi cursor
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 
+Plug 'tpope/vim-repeat'
 " Navigating
 Plug 'justinmk/vim-sneak'
 
@@ -134,7 +133,7 @@ nnoremap <C-k> :cprev<CR>
 vnoremap <leader>p "_dP
 vnoremap <leader>y "+y
 nnoremap <leader>Y gg"yG
-inoremap jh <Esc>
+inoremap <C-c> <Esc>
 " Save file
 nmap <leader>w :w<CR>
 
@@ -174,7 +173,7 @@ nnoremap <leader>gh <cmd>Telescope help_tags<cr>
 " Move to previous/next
 nnoremap <C-q> :BufferPrevious<CR>
 nnoremap <C-w> :BufferNext<CR>
-nnoremap <C-c> :BufferClose<CR>
+nnoremap <C-b> :BufferClose<CR>
 nnoremap <leader>q< :BufferMovePrevious<CR>
 nnoremap <leader>q> :BufferMoveNext<CR>
 " In insert or command mode, move normally by using Ctrl
