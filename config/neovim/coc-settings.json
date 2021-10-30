@@ -1,0 +1,14 @@
+{
+  "rust-analyzer.checkOnSave.command": "clippy",
+  "rust-analyzer.diagnostics.disabled": [
+      "macro-error"
+  ],
+
+  "coc.preferences.formatOnSaveFiletypes": ["javascript", "typescript", "rust"],
+  "tsserver.formatOnType": true,
+  "coc.preferences.formatOnType": true,
+
+  "eslint.autoFixOnSave": true,
+
+  "prettier.disableSuccessMessage": true
+}
