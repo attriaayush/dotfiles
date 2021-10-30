@@ -133,9 +133,16 @@ nnoremap <C-k> :cprev<CR>
 vnoremap <leader>p "_dP
 vnoremap <leader>y "+y
 nnoremap <leader>Y gg"yG
+nnoremap Y y$
 inoremap <C-c> <Esc>
+
 " Save file
 nmap <leader>w :w<CR>
+
+" Keeping it all centered
+nnoremap n nzzzv
+nnoremap N Nzzzv
+nnoremap J mzJ`z
 
 " Disable arrow keys
 map <up> <nop>
