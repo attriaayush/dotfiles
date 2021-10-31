@@ -149,4 +149,5 @@ nmap <leader>gs :G<CR>
 nmap <leader>gc :Git commit<CR>
 
 nnoremap <leader>ga :Git fetch --all<CR>
-nnoremap <leader>gp :Git fetch --all<CR>
+nnoremap <leader>gpu :Git push<CR>
+nnoremap <leader>gpl :Git pull<CR>
