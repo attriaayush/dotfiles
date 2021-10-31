@@ -1,8 +1,6 @@
 let mapleader = " "
 
 call plug#begin('~/.vim/plugged')
-" PLUGINS
-" Theming and Colours
 Plug 'ayu-theme/ayu-vim'
 Plug 'editorconfig/editorconfig-vim'
 
@@ -43,6 +41,8 @@ Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'tpope/vim-repeat'
 " Navigating
 Plug 'justinmk/vim-sneak'
+
+Plug 'mbbill/undotree'
 
 " Markdown plugins
 Plug 'godlygeek/tabular'
@@ -118,7 +118,7 @@ vnoremap N :m '<-2<CR>gv=gv
 nnoremap <C-p> <cmd>Telescope find_files<cr>
 nnoremap <leader>gf <cmd>Telescope live_grep<cr>
 nnoremap <leader>gb <cmd>Telescope buffers<cr>
-nnoremap <leader>gh <cmd>Telescope help_tags<cr>
+nnoremap <leader>ght <cmd>Telescope help_tags<cr>
 
 " Move to previous/next
 nnoremap <C-q> :BufferPrevious<CR>
@@ -139,3 +139,14 @@ cnoremap <C-l> <Right>
 map <C-t> :NERDTreeToggle<CR>
 
 nmap <leader>f :Format<CR>
+" Undo tree toggle
+nnoremap <F5> :UndotreeToggle<CR>
+
+" Git
+nmap <leader>gh :diffget //3<CR>
+nmap <leader>gu :diffget //2<CR>
+nmap <leader>gs :G<CR>
+nmap <leader>gc :Git commit<CR>
+
+nnoremap <leader>ga :Git fetch --all<CR>
+nnoremap <leader>gp :Git fetch --all<CR>
