@@ -1,12 +1,41 @@
 {
   "rust-analyzer.checkOnSave.command": "clippy",
-  "rust-analyzer.diagnostics.disabled": ["macro-error","unresolved-proc-macro"],
-
-  "coc.preferences.formatOnSaveFiletypes": ["javascript", "typescript", "rust"],
+  "rust-analyzer.checkOnSave.target": "aarch64-apple-darwin",
+  "rust-analyzer.completion.autoimport.enable": true,
+  "rust-analyzer.diagnostics.disabled": [
+    "macro-error",
+    "unresolved-proc-macro"
+  ],
+  "typescript.referencesCodeLens.enable": true,
+  "java.jdt.ls.vmargs": "-javaagent:/usr/local/share/lombok/lombok.jar",
+  "coc.preferences.formatOnSave": false,
   "tsserver.formatOnType": true,
   "coc.preferences.formatOnType": true,
-
-  "eslint.autoFixOnSave": true,
-
-  "prettier.disableSuccessMessage": true
+  "languageserver": {
+    "ccls": {
+      "command": "ccls",
+      "filetypes": ["c", "cpp", "objc", "objcpp"],
+      "rootPatterns": [
+        ".ccls",
+        "compile_commands.json",
+        ".vim/",
+        ".git/",
+        ".hg/"
+      ],
+      "initializationOptions": {
+        "cache": {
+          "directory": "/tmp/ccls"
+        }
+      }
+    },
+    "golang": {
+      "command": "gopls",
+      "rootPatterns": ["go.mod", ".vim/", ".git/", ".hg/"],
+      "filetypes": ["go"]
+    },
+    "zls": {
+      "command": "/Users/aayushattri/zls/zls",
+      "filetypes": ["zig"]
+    }
+  }
 }
